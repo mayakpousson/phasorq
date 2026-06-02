@@ -1,0 +1,19 @@
+[project]
+name = "phasorq"
+version = "0.1.0"
+description = "Noise-adaptive quantum circuit optimization engine"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "qiskit>=1.0.0",
+    "pandas>=2.2.0",
+    "numpy>=1.26.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
