@@ -9,6 +9,9 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    env:
+      # Explicitly opt into Node 24 to silence the runtime deprecation warning
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     steps:
     - name: Checkout Code Base
       uses: actions/checkout@v4
