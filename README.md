@@ -35,3 +35,31 @@ To evolve PhasorQ into an enterprise-ready, production-grade security deployment
 1. **Moving Target Defense (MTD) Circuit Obfuscation:** Upgrade the compilation routing pass into a security-adaptive randomization engine. By programmatically shuffling layout mappings across varying subsets of healthy physical qubits on every run, the platform will randomize physical hardware emissions to neutralize side-channel pulse and thermal snooping attacks.
 2. **Post-Quantum Cryptography (PQC) Benchmarking:** Expand the analytics infrastructure to profile NIST-approved post-quantum cryptographic primitives (such as ML-KEM/Kyber or ML-DSA/Dilithium). The dashboard will allow security teams to benchmark data-fidelity margins when running quantum-resistant algorithms on noisy cloud co-processors.
 3. **Dynamic Topology Mapping with Qiskit Transpiler Integration:** Integrate native Qiskit hardware coupling map graphs into the `NoiseAdaptiveRouter`. This will allow the optimization pass to account for physical wire routing constraints and calculate the precise gate-error penalties associated with mandatory SWAP gate injections.
+
+## Industry Baseline Comparison & Financial Benchmarking
+Standard quantum compilers (e.g., Qiskit, Cirq) optimize strictly for computational gate minimization. They remain completely agnostic to execution costs, slot pricing, and hardware fidelity degradation, meaning they will blindly execute high-error workloads that return useless random noise.
+
+PhasorQ introduces a **Quantum FinOps Guardrail Layer** that treats fidelity as a budgetary constraint. 
+
+### Performance Under Scale
+Using a simulated multi-tenant environment (`tests/benchmark_novelty.py`), PhasorQ evaluates circuit depth against real-time physical error compound curves to enforce execution SLAs:
+
+
+| Circuit Depth | Baseline ESP | PhasorQ ESP | Baseline Cost Waste | PhasorQ Cost Waste | Pipeline Action | Capital Saved |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **5** | 92.0% | 92.1% | $0.00 | $0.00 | EXECUTED | $0.00 |
+| **50** | 43.7% | 43.7% | $0.00 | $0.00 | EXECUTED | $0.00 |
+| **100** | 19.1% | 19.1% | $0.00 | $0.00 | EXECUTED | $0.00 |
+| **150** | 8.3% | 8.4% | $1.00 | $0.00 | **BLOCKED / REROUTED** | **$1.00** |
+| **250** | 1.6% | 1.6% | $1.00 | $0.00 | **BLOCKED / REROUTED** | **$1.00** |
+
+*   **The Baseline Trap:** Blindly executes deep cryptographic/QML workloads below the execution viability threshold, resulting in 100% loss of allocated capital.
+*   **The PhasorQ Advantage:** Instantly isolates sub-threshold workloads before runtime execution, safeguarding capital allocations and re-allocating budgets dynamically.
+
+## Quickstart: Running the Novelty & FinOps Test Matrix
+This project uses `uv` by Astral for deterministic, lightning-fast dependency caching.
+
+Execute the native validation matrix to observe PhasorQ's access-control routing mechanism in action:
+```bash
+uv run python tests/benchmark_novelty.py
+```
