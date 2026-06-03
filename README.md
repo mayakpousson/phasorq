@@ -1,6 +1,6 @@
 # PhasorQ: Noise-Adaptive Circuit Co-Processor & Compiler
 
-[![PhasorQ CI Pipeline](https://github.com)](https://github.com)
+![PhasorQ CI Pipeline](https://github.com)
 
 PhasorQ is an enterprise-grade middleware optimization platform designed to safeguard cloud computing budgets and data execution fidelity for Quantum Machine Learning (QML) and cryptographic workloads. The system intercepts abstract quantum circuits, evaluates them against live hardware noise metrics, and dynamically rewrites the physical qubit layout mapping to execute exclusively on the highest-performing hardware tracks.
 
