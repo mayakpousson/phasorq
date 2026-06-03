@@ -1,0 +1,28 @@
+name: PhasorQ CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code Base
+      uses: actions/checkout@v4
+
+    - name: Set up Astral uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "latest"
+
+    - name: Set up Python Runtime
+      run: uv python pin 3.14
+
+    - name: Install Project Dependencies
+      run: uv sync --group dev
+
+    - name: Execute Automated Test Suite
+      run: uv run pytest tests/
