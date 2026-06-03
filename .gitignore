@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Astral uv caching
+.uv/
+
+# Streamlit local state
+.streamlit/config.toml
+.streamlit/secrets.toml
+
+# IDEs and Editors
+.vscode/
+.idea/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
