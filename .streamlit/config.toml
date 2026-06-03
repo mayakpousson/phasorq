@@ -1,0 +1,3 @@
+[server]
+# Enforces Streamlit to maintain project root integrity when scanning modules
+gatherUsageStats = false
