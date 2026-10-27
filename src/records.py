@@ -7,6 +7,7 @@ from hashlib import sha256
 from html import escape
 from io import StringIO
 import json
+import math
 from uuid import uuid4
 
 from qiskit import qasm2
@@ -74,7 +75,7 @@ def validate_record(record: ExperimentRecord) -> None:
         raise ValueError("Unknown result source")
     if record.measurement_order != "cN...c1c0":
         raise ValueError("Unsupported measurement bit order")
-    if record.circuit_sha256 and record.circuit_sha256 != circuit_digest(config.experiment_key):
+    if record.circuit_sha256 != circuit_digest(config.experiment_key):
         raise ValueError("Circuit identity does not match the selected experiment")
     if config.shots <= 0 or config.shots > 100000:
         raise ValueError("Invalid measurement count")
@@ -84,19 +85,28 @@ def validate_record(record: ExperimentRecord) -> None:
         not record.metadata.get("job_id") or not record.metadata.get("backend")
     ):
         raise ValueError("Hardware job ID and backend are required")
+    if record.source == "imported_hardware" and (
+        config.profile_key is not None or config.seed is not None or len(record.trials) != 1
+    ):
+        raise ValueError("Hardware records must contain one observed run without a synthetic profile")
+    if record.source == "simulation" and [trial.method for trial in record.trials] != [
+        "qiskit_default", "phasorq_layout"
+    ]:
+        raise ValueError("A simulation comparison requires both methods")
     if not record.trials:
         raise ValueError("Record has no results")
     width = EXPERIMENTS[config.experiment_key].measured_bits
     expected = EXPERIMENTS[config.experiment_key].expected
     for trial in record.trials:
-        if not trial.counts or sum(trial.counts.values()) != config.shots:
-            raise ValueError("Measurement counts do not match the recorded shots")
-        if any(type(count) is not int or count < 0 for count in trial.counts.values()):
+        if not trial.counts or any(type(count) is not int or count < 0
+                                   for count in trial.counts.values()):
             raise ValueError("Counts must be nonnegative integers")
+        if sum(trial.counts.values()) != config.shots:
+            raise ValueError("Measurement counts do not match the recorded shots")
         if any(len(bits) != width or set(bits) - {"0", "1"} for bits in trial.counts):
             raise ValueError("Measurement bitstrings have the wrong width or order")
         calculated = outcome_distance(trial.counts, expected)
-        if abs(trial.distance - calculated) > 1e-9:
+        if not math.isfinite(trial.distance) or abs(trial.distance - calculated) > 1e-9:
             raise ValueError("Recorded distance does not match the counts")
 
 

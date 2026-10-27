@@ -93,6 +93,8 @@ with results_tab:
             st.warning("User-imported hardware result. PhasorQ has not verified provider provenance. "
                        "The synthetic simulations are illustrative and are not calibrated to this device.")
             st.caption(f"Backend: {selected.metadata['backend']} · Job: {selected.metadata['job_id']}")
+            if selected.metadata.get("charge") is not None:
+                st.caption(f"Recorded charge: {selected.metadata['charge']} provider credit units")
         else:
             st.caption(f"Synthetic profile: {PROFILES[selected.config.profile_key].name} · "
                        f"Shots per method: {selected.config.shots} · Seed: {selected.config.seed}")

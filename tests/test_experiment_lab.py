@@ -11,6 +11,8 @@ from src.records import (
 )
 from src.runner import run_comparison
 from scripts.benchmark_simulation import summarize_pairs
+from src.hardware_import import import_open_quantum_result, normalize_counts
+from src.records import circuit_digest
 
 
 @pytest.mark.parametrize("key", list(EXPERIMENTS))
@@ -86,3 +88,34 @@ def test_benchmark_summary_labels_wins_correctly():
     assert summary["qiskit_closer"] == 1
     assert summary["ties"] == 1
     assert summary["mean_phasorq_minus_qiskit"] == pytest.approx(0.)
+
+
+def test_open_quantum_result_imports_with_explicit_identity_and_bit_order():
+    record = import_open_quantum_result(
+        experiment_key="bell", expected_circuit_sha256=circuit_digest("bell"),
+        output={"counts": {"00": 130, "11": 126}}, shots=256,
+        job_id="hardware-job-1", backend="rigetti:cepheus-1-108q",
+    )
+    assert record.source == "imported_hardware"
+    assert record_from_json(record.to_json()) == record
+    assert record.trials[0].counts == {"00": 130, "11": 126}
+
+
+@pytest.mark.parametrize("output", [
+    {"counts": {"0": 256}},
+    {"counts": {"00": 255}},
+    {"counts": {"00": -1, "11": 257}},
+    {"counts": {"00": 128.0, "11": 128}},
+    {"histogram": [128, 128]},
+])
+def test_open_quantum_import_rejects_unknown_or_inconsistent_output(output):
+    with pytest.raises(ValueError):
+        normalize_counts(output, measured_bits=2, expected_shots=256)
+
+
+def test_open_quantum_import_rejects_circuit_mismatch():
+    with pytest.raises(ValueError, match="does not match"):
+        import_open_quantum_result(
+            experiment_key="bell", expected_circuit_sha256="wrong",
+            output={"00": 256}, shots=256, job_id="job", backend="rigetti",
+        )
