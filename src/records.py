@@ -135,6 +135,7 @@ def imported_hardware_record(
     experiment_key: str, counts: dict[str, int], *, job_id: str, backend: str,
     created_at_utc: str | None = None, calibration: dict | None = None,
     charge: float | None = None, software: dict[str, str] | None = None,
+    submitted_at_utc: str | None = None,
 ) -> ExperimentRecord:
     shots = sum(counts.values())
     trial = TrialResult("hardware", counts, outcome_distance(counts, EXPERIMENTS[experiment_key].expected))
@@ -142,7 +143,11 @@ def imported_hardware_record(
         config=ExperimentConfig(experiment_key, None, shots, None),
         source="imported_hardware", trials=[trial], software=software or {},
         metadata={"job_id": job_id, "backend": backend, "calibration": calibration,
-                  "charge": charge},
+                  "charge": charge, "submitted_at_utc": submitted_at_utc,
+                  "measurement_mapping": [
+                      {"classical_bit": bit, "logical_qubit": bit}
+                      for bit in range(EXPERIMENTS[experiment_key].measured_bits)
+                  ]},
         created_at_utc=created_at_utc or datetime.now(timezone.utc).isoformat(),
         circuit_sha256=circuit_digest(experiment_key),
     )

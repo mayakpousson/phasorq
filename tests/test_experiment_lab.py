@@ -95,10 +95,16 @@ def test_open_quantum_result_imports_with_explicit_identity_and_bit_order():
         experiment_key="bell", expected_circuit_sha256=circuit_digest("bell"),
         output={"counts": {"00": 130, "11": 126}}, shots=256,
         job_id="hardware-job-1", backend="rigetti:cepheus-1-108q",
+        submitted_at_utc="2026-10-27T10:00:00Z",
     )
     assert record.source == "imported_hardware"
     assert record_from_json(record.to_json()) == record
     assert record.trials[0].counts == {"00": 130, "11": 126}
+    assert record.metadata["submitted_at_utc"] == "2026-10-27T10:00:00Z"
+    assert record.metadata["measurement_mapping"] == [
+        {"classical_bit": 0, "logical_qubit": 0},
+        {"classical_bit": 1, "logical_qubit": 1},
+    ]
 
 
 @pytest.mark.parametrize("output", [

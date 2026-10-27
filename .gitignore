@@ -13,6 +13,7 @@ env/
 .uv/
 .uv-cache/
 .uv-python/
+study_private/
 
 # Streamlit local state
 .streamlit/config.toml

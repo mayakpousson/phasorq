@@ -42,6 +42,6 @@ def import_open_quantum_result(
     counts = normalize_counts(output, EXPERIMENTS[experiment_key].measured_bits, shots)
     return imported_hardware_record(
         experiment_key, counts, job_id=job_id, backend=backend,
-        created_at_utc=submitted_at_utc, calibration=calibration, charge=charge,
+        submitted_at_utc=submitted_at_utc, calibration=calibration, charge=charge,
         software={"provider": "Open Quantum"},
     )
