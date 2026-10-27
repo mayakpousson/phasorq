@@ -2,6 +2,7 @@ import pytest
 import pandas as pd
 from qiskit import QuantumCircuit
 from src.compiler.router import NoiseAdaptiveRouter
+from src.profiles import PROFILES, build_backend
 
 @pytest.fixture
 def mock_telemetry():
@@ -19,11 +20,13 @@ def test_router_selects_healthiest_qubits(mock_telemetry):
     assert 0 in best_qubits
     assert 1 not in best_qubits
 
-def test_compilation_attaches_correct_metadata(mock_telemetry):
+def test_compilation_uses_proposed_layout_on_real_device_target(mock_telemetry):
     router = NoiseAdaptiveRouter(mock_telemetry)
     qc = QuantumCircuit(2)
-    optimized_qc = router.compile_to_healthy_layout(qc)
-    
-    # CHANGED HERE: Verifies the data exists inside metadata
-    assert "optimal_layout" in optimized_qc.metadata
-    assert 2 in optimized_qc.metadata["optimal_layout"]
+    qc.h(0)
+    qc.cx(0, 1)
+    optimized_qc = router.compile_to_healthy_layout(qc, build_backend(PROFILES["uneven"]))
+
+    assert optimized_qc.metadata["proposed_layout"] == [2, 0]
+    assert optimized_qc.layout is not None
+    assert optimized_qc.count_ops().get("cx", 0) >= 1

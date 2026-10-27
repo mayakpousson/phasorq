@@ -13,8 +13,9 @@ class PerformancePredictor:
 
     def calculate_circuit_esp(self, circuit: QuantumCircuit, gate_duration_us: float = 0.05) -> float:
         """
-        Calculates the Estimated Success Probability (ESP) of a given quantum circuit.
-        Fuses physical decoherence formulas with statistical gate failure rates.
+        Historical, unvalidated survival heuristic for a quantum circuit.
+        This is not a calibrated probability of a useful answer and is not used
+        to rank the measured results in the experiment lab.
         """
         # Count total operations (gates) in the circuit
         total_gates = sum(circuit.count_ops().values())

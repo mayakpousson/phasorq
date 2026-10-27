@@ -22,7 +22,7 @@ jobs:
         version: "latest"
 
     - name: Set up Python Runtime
-      run: uv python pin 3.14
+      run: uv python pin 3.12
 
     - name: Install Project Dependencies
       run: uv sync --group dev

@@ -1,85 +1,47 @@
-# PhasorQ: Quantum Execution Governance and FinOps Middleware
+# PhasorQ Experiment Lab
 
 [![PhasorQ CI Pipeline](https://github.com/mayakpousson/phasorq/actions/workflows/ci.yml/badge.svg)](https://github.com/mayakpousson/phasorq/actions/workflows/ci.yml)
 
-PhasorQ is an enterprise-grade middleware optimization platform designed to safeguard cloud computing budgets and data execution fidelity for Quantum Machine Learning (QML) and cryptographic workloads. 
+PhasorQ helps students explore a small quantum experiment, compare two ways to compile it, and keep a reproducible record of what happened. It is a Streamlit teaching app and a paired simulation study. Its built-in runs use **fixed, synthetic five-qubit devices**, not live hardware or paid jobs. It uses no LLM API.
 
-Unlike classical compilers that optimize strictly for low-level gate constraints, PhasorQ introduces execution governance and cost-containment as first-class compilation objectives, acting as an automated financial circuit breaker for multi-tenant quantum cloud networks.
+## Try the app
 
----
+Install [uv](https://docs.astral.sh/uv/) and use Python 3.12:
 
-## The Market Context: Why Existing Quantum Toolchains Fall Short
-
-Quantum processors (QPUs) deployed via the cloud are highly volatile, suffering from continuous drifts in thermal fluctuations, relaxation times (T1), and dephasing times (T2). Current quantum SDKs and hardware-aware transpilers optimize strictly for:
-* Gate count minimization
-* Circuit depth reduction
-* Topological routing feasibility
-
-These platforms remain completely blind to execution economics. If an enterprise user submits a deep cryptographic or QML workload to a degrading hardware track, standard platforms will execute the circuit, consume the cloud capital, and return completely decayed calculations yielding random digital noise. 
-
-PhasorQ shifts the paradigm from physics optimization to infrastructure asset management, treating execution fidelity as an economic resource. It evaluates computational viability before runtime execution, dynamically routing workloads to high-performing hardware tracks or halting economically dead operations completely.
-
----
-
-## System Architecture
-
-PhasorQ operates as an intelligent, noise-adaptive middleware layer consisting of four modular, decoupled tiers:
-
-* **Telemetry Broker (src/telemetry/)**
-  The Telemetry Broker simulates real-time REST API telemetry streams from physical multi-qubit backends. It utilizes NumPy statistical distributions to accurately model ongoing physical calibration parameter drifts. The raw data streams are then cleaned and structured into highly optimized Pandas DataFrames for downstream consumption.
-
-* **Predictive Analytics Engine (src/analytics/)**
-  The Predictive Analytics Engine implements the official physical exponential decay laws of quantum mechanics to evaluate abstract circuits. It calculates overall hardware execution time by accurately measuring cumulative gate depth durations. By compounding statistical gate errors with physical hardware relaxation and dephasing rates, the engine computes a precise Estimated Success Probability before any cloud capital is expended.
-
-* **Noise-Adaptive Compiler (src/compiler/)**
-  The Noise-Adaptive Compiler evaluates the incoming telemetry datasets via specialized algorithmic scoring heuristics. It assigns precise health scores to individual physical hardware tracks based on current operational error thresholds. This process isolates the highest-performing qubit paths and injects the optimal hardware routing layout seamlessly into the circuit metadata.
-
-* **Interactive Control Room (src/app.py)**
-  The Interactive Control Room provides an enterprise-grade dark-mode analytical visualization layer for monitoring system performance. This web interface is built using Streamlit and utilizes Plotly Express for rendering automated data visualizations. It leverages looping execution fragments to continuously stream hardware calibration shifts, allowing users to test execution yield increases in a safe simulation environment.
-
----
-
-## Execution Governance Benchmark
-
-To validate PhasorQ's access-control routing mechanism, the platform was benchmarked against a standard industry cloud deployment pipeline using a simulated 7-qubit noisy backend (tests/benchmark_novelty.py). 
-
-Rather than focusing on incremental gate optimization, the benchmark tracks governance decisions as circuit complexity scales:
-
-
-| Circuit Depth | Baseline Decision | PhasorQ Decision | Baseline Waste | PhasorQ Waste | Capital Saved |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **10** | EXECUTED (84.7% ESP) | EXECUTED (84.7% ESP) | \$0.00 | \$0.00 | \$0.00 |
-| **50** | EXECUTED (43.7% ESP) | EXECUTED (43.7% ESP) | \$0.00 | \$0.00 | \$0.00 |
-| **100** | EXECUTED (19.1% ESP) | EXECUTED (19.1% ESP) | \$0.00 | \$0.00 | \$0.00 |
-| **150** | EXECUTED (8.3% ESP) | BLOCKED / REROUTED | \$1.00 | \$0.00 | \$1.00 |
-| **250** | EXECUTED (1.6% ESP) | BLOCKED / REROUTED | \$1.00 | \$0.00 | \$1.00 |
-
-### Insights from the Matrix
-* Standard compilation tools blindly run deep workloads even when they fall far below viable execution thresholds. This results in a complete loss of allocated operational capital on corrupted calculations.
-* The PhasorQ governance engine flags sub-threshold workloads before runtime submission occurs. It instantly halts risky jobs to enforce strict budget conservation rules and protect enterprise infrastructure SLAs.
-
----
-
-## Tooling and DevOps Rigor
-
-* The quantum core is built using Python 3.14 and leverages the core elements of the Qiskit SDK framework.
-* Package infrastructure is managed via Astral uv for fast, deterministic dependency resolution and isolated local environment caching.
-* Heavy data automation, statistical distribution modeling, and system profiling are driven entirely by Pandas and NumPy.
-* The frontend client interface utilizes a clean Streamlit UI architecture built around polished self-looping web streams.
-* The automated continuous integration pipeline relies on GitHub Actions to execute a strict multi-part test matrix using pytest on every commit.
-
----
-
-## Engineering Roadmap
-
-To transition PhasorQ into a multi-cloud enterprise production platform, future development targets three distinct milestones:
-
-1. **Dynamic Topology Mapping and Graph Integration**
-   The platform will integrate native Qiskit hardware CouplingMap graphs directly into the optimization router. This addition will allow the system to calculate the precise financial and gate-error penalties associated with mandatory physical SWAP gate injections on restricted physical hardware layouts.
-
-2. **Moving Target Defense (MTD) Circuit Obfuscation**
-   The compilation layer will be upgraded to programmatically shuffle layout mappings across random, varying subsets of healthy physical qubits on every runtime iteration. This mechanism randomizes physical hardware emissions to successfully neutralize side-channel pulse and thermal snooping attacks.
-
-3. **Post-Quantum Cryptography (PQC) Profiling**
-   The analytics infrastructure will expand to profile NIST-approved post-quantum cryptographic primitives such as ML-KEM/Kyber or ML-DSA/Dilithium. This feature will allow corporate security teams to benchmark data-fidelity margins before deploying quantum-resistant code onto noisy public cloud co-processors.
+```powershell
+uv sync --group dev
+uv run streamlit run src/app.py
 ```
+
+Choose Bell state, three-qubit GHZ, or three-bit Bernstein–Vazirani. Pick a synthetic hardware profile and 256, 1,024, or 4,096 measurements, then select **Run comparison**. The app shows the ideal distribution and both observed distributions, compilation depth, two-qubit gate count, and distance from expected results. Lower distance means the measured bitstrings were closer to the ideal distribution; it is **not quantum-state fidelity**. A worse result for PhasorQ is shown as a worse result.
+
+The default comparison uses Qiskit's standard layout selection. PhasorQ ranks qubits using a simple T2-to-single-qubit-error score and supplies that order as an initial layout for Qiskit's real topology-aware compiler. The compiler can add gates to make a proposal work; the health score is not a proven optimizer. The experiments use a bidirectional five-qubit line with either uniform or uneven synthetic errors. Qiskit Aer derives its noise model from the same device target used for compilation. All profiles are deterministic, versioned teaching examples.
+
+The historic predictor in `src/analytics/predict.py` remains for reference and old tests. Its formula is an **unvalidated heuristic**, not a precise probability that a computation will produce a useful answer. The lab evaluates sampled outcomes instead.
+
+## Keep and share experiments
+
+The app keeps a history during one browser session. Download a JSON record to keep it; import it later to see the result again. CSV data and a standalone HTML report are also available. The JSON contains circuit identity, versioned profile, random seed, software versions, measurement counts, compilation statistics, and source. Imported hardware results are labeled as user imports because the public app cannot verify their origin. No account or database is required.
+
+## Reproduce the study
+
+```powershell
+uv run pytest tests/
+uv run python scripts/benchmark_simulation.py
+```
+
+The study runs three experiments × two profiles × three measurement counts × two compilation methods × ten seeds: **360 simulated trials, arranged as 180 matched pairs**. It saves row-level data to `results/simulation_runs.csv` and paired summaries to `results/simulation_summary.csv`. Both methods get the same device, measurement allowance, and seed. The summary includes ties and cases where either method loses. See [results/README.md](results/README.md) for interpretation and limitations. These are simulations, not 360 independent QPU experiments.
+
+## Open Quantum hardware study
+
+`notebooks/open_quantum_study.ipynb` documents a separate, opt-in validation study. The [Open Quantum Qiskit plugin](https://docs.openquantum.com/qiskit-plugin/overview/) can access a real processor, but credentials stay on the operator's own computer. The proposed study starts with Rigetti, uses public compute, reviews every preparation quote, and stays within a $10 equivalent Spark-credit ceiling. Hardware records can be imported into the website to compare their observed outputs with the ideal result. Live calibration is optional on Open Quantum, so synthetic noise must not be presented as a calibrated copy of a QPU. Public compute circuits are not confidential and published results require provider attribution; see [Open Quantum's terms](https://www.quantumrings.com/terms).
+
+The website never requests Open Quantum credentials or submits a hardware job. The hardware study is separate from the simulation pilot and will be reported only after actual jobs have run.
+
+## Project status
+
+The simulation product and 360-trial benchmark are implemented. Hosting, the five-student usability study, real hardware observations, and a video walkthrough depend on external accounts or participants; results from those activities will be added when completed. [docs/pilot_protocol.md](docs/pilot_protocol.md) gives the user study procedure and success criteria.
+
+This project does not claim financial savings, automatic quantum job blocking, a production service-level agreement, or improved hardware fidelity. Its purpose is to make experiment choices and limitations inspectable.
+
+MIT License.

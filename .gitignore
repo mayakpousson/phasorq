@@ -11,6 +11,8 @@ env/
 
 # Astral uv caching
 .uv/
+.uv-cache/
+.uv-python/
 
 # Streamlit local state
 .streamlit/config.toml
